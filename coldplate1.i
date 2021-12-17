@@ -1,4 +1,8 @@
-# Fluid properties
+# modified with FEM kernels
+#the current error:'The named variable is a standard variable
+#try a 'coupled[Value/Gradient/Dot/etc]...' function instead', still needs to be further modified
+
+# Fluid 
 mu = 1e-3     # Pa*s
 rho = 998.2    #kg/m3
 cp = 4128      #j/kg-k
