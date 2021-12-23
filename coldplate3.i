@@ -1,5 +1,5 @@
 # Fluid properties
-mu = 1e-3     # Pa*s
+mu = 1000    # Pa*s
 rho = 998.2    #kg/m3
 cp = 4128      #j/kg-k
 k = 0.6     #w/m-k
@@ -17,7 +17,7 @@ k_s = 54        #w/m-k
 
 # Operating conditions
 v_inlet = 0.1
-T_inlet = 273        #k
+T_inlet = 293        #k
 heat_source = 2.6e8              # W/m^3
 p_outlet = 1e-6
 
@@ -34,27 +34,29 @@ p_outlet = 1e-6
  [./velocity]
     family = LAGRANGE_VEC
     block='channel'
+    scaling = 1e7
   [../]
 
   [./p]
     order = FIRST
     family = LAGRANGE
     block='channel'
+    scaling = 1e13
   [../]
   [T_channel]
-    initial_condition = 273
-    scaling = 1e-4
+    initial_condition = 293
+    scaling = 1e8
     block='channel'
   []
 
   [T_plate]
-    initial_condition = 273
-    scaling = 1e-4
+    initial_condition = 293
+    scaling = 1e7
     block='plate'
   []
   [T_source]
-    initial_condition = 273
-    scaling = 1e-4
+    initial_condition = 293
+    scaling = 1e-8
     block='heat-source'
   []
 []
@@ -164,8 +166,22 @@ p_outlet = 1e-6
     type = DirichletBC
     variable =T_channel
     boundary = 'inlet'
-    value = 273
+    value = 293
   [../]
+  [./temp_source_wall]
+  type = ADNeumannBC
+  variable = T_source
+  boundary = 'wall-source-top wall-source-left wall-source-right wall-source-front wall-source-back'
+  value = 0
+[../]
+
+[./temp_wall]
+  type = ADNeumannBC
+  variable = T_plate
+  boundary = 'wall-top wall-left wall-right wall-front wall-back wall-bottom'
+  value = 0
+[../]
+
   [./outlet_p]
     type = DirichletBC
     variable = p
@@ -197,7 +213,7 @@ p_outlet = 1e-6
   [T]
   []
   [u]
-    initial_condition = 273
+    initial_condition = 293
   []
 []
 
@@ -284,16 +300,25 @@ p_outlet = 1e-6
   [Newton_SMP]
     type = SMP
     full = true
+    petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
+    petsc_options_value = ' lu       mumps'
     solve_type = 'NEWTON'
   []
 []
 
+[Debug]
+  show_var_residual_norms = true
+  show_var_residual=' p T_channel T_plate T_source'
+[]
+
 [Executioner]
-  type = Steady
-  nl_rel_tol = 1e-12
-  petsc_options_iname = '-pc_type -sub_pc_type -sub_pc_factor_shift_type -ksp_gmres_restart'
-  petsc_options_value = 'bjacobi  lu           NONZERO                   200'
-  automatic_scaling=true
+    type = Steady
+    nl_rel_tol = 1e-14
+    nl_max_its = 1000
+    petsc_options_iname = '-pc_type -sub_pc_type -sub_pc_factor_shift_type -ksp_gmres_restart'
+    petsc_options_value = 'bjacobi  lu           NONZERO                   300'
+   #automatic_scaling=true
+   line_search = none
 []
 
 [Outputs]
