@@ -161,7 +161,7 @@ p_outlet = 1e-6
     function_y = 0.1   #m/s     y方向上0.1m/s
   [../]
 
-#不确定是否需要设置此温度入口
+#I'm not sure this temp inlet right?
   [./inlet_temp]
     type = DirichletBC
     variable =T_channel
