@@ -113,6 +113,7 @@ p_outlet = 1e-6
     type = INSADEnergySource
     variable = T_channel
     source_variable = u
+    #I am not sure if u is used to initialize the temperature of the fluid. 
   []
 
   [temperature_supg]
@@ -210,35 +211,12 @@ p_outlet = 1e-6
  []
 
 [AuxVariables]
-  [T]
-  []
   [u]
     initial_condition = 293
   []
 []
 
-[AuxKernels]
-  [T_channel]
-    type = NormalizationAux
-    variable = T
-    source_variable = T_channel
-    block = 'channel'
-  []
 
-  [T_plate]
-    type = NormalizationAux
-    variable = T
-    source_variable = T_plate
-    block = 'plate'
-  []
-
-  [T_source]
-    type = NormalizationAux
-    variable = T
-    source_variable = T_source
-    block = 'heat-source'
-  []
-[]
 
 [Materials]
   [./const_fluid]
